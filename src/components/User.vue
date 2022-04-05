@@ -90,6 +90,7 @@
                 type="warning"
                 icon="el-icon-setting"
                 size="mini"
+                @click="setRole(scope.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -170,6 +171,32 @@
         <el-button type="primary" @click="editUserInfo()">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 修改角色对话框 -->
+    <el-dialog
+      title="分配角色"
+      :visible.sync="setRoledialogVisible"
+      width="30%"
+      @close="setRoleDialogClose"
+    >
+      <p>当前的用户:{{ userinfo.username }}</p>
+      <p>当前的角色:{{ userinfo.role_name }}</p>
+      <p>
+        分配新角色
+        <el-select v-model="selectRoleId" placeholder="请选择">
+          <el-option
+            v-for="item in rolesList"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+      </p>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setRoledialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="savaRoleInfo">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -242,6 +269,13 @@ export default {
           { validator: checkMobile, trigger: "blur" },
         ],
       },
+      // 修改角色对话框是否显示
+      setRoledialogVisible: false,
+      // 当前这一行用户的信息
+      userinfo: {},
+      // 所有的角色列表
+      rolesList: [],
+      selectRoleId: "",
     };
   },
   created() {
@@ -352,6 +386,7 @@ export default {
     // 根据id删除用户
     async removeUserById(id) {
       // 弹窗询问用户是否删除数据
+      //在vue原型上添加this.$confirm，值为MessageBox.confirm
       const data = await this.$confirm(
         "此操作将永久删除该拥护, 是否继续?",
         "提示",
@@ -360,6 +395,9 @@ export default {
           cancelButtonText: "取消",
           type: "warning",
         }
+        //如果不加catch捕获异常，点击取消按钮时，控制台将报错
+        //只有捕获异常，才能得到cancel字符串
+        //捕获异常，返回err，data接收异常信息（err）
       ).catch((err) => err);
       //点击确定，返回字符串，confirm
       // 点击取消，返回字符串，cancel
@@ -371,6 +409,35 @@ export default {
       if (res.meta.status !== 200) return this.$message.error("删除失败");
       this.$message.success(res.meta.msg);
       this.getUserList();
+    },
+    // 为用户分配角色
+    async setRole(user) {
+      this.userinfo = user;
+      // 在展示对话框前先获取所有的角色列表
+      const { data: res } = await this.$http.get("roles");
+      if (res.meta.status !== 200)
+        return this.$message.error("获取角色列表失败");
+      // this.$message.success(res.meta.msg);
+      this.rolesList = res.data;
+      this.setRoledialogVisible = true;
+    },
+    // 点击按钮分配角色
+    async savaRoleInfo() {
+      if (!this.selectRoleId) return this.$message.error("请选择角色");
+      const { data: res } = await this.$http.put(
+        `users/${this.userinfo.id}/role`,
+        { rid: this.selectRoleId }
+      );
+      if (res.meta.status !== 200) return this.$message.error("分配角色失败");
+      this.$message.success(res.meta.msg);
+      this.getUserList();
+      this.setRoledialogVisible = false;
+    },
+    // 监听分配角色对话框的关闭事件
+    setRoleDialogClose() {
+      // 重置
+      this.selectRoleId = "";
+      this.userinfo = {};
     },
   },
 };
