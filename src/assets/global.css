@@ -40,3 +40,13 @@ body,
     display: flex;
     align-items: center;
 }
+
+/* 解决级联选择器铺满全屏的问题 */
+/* 列表栈占满全屏 */
+.el-cascader-panel {
+    max-height: 200px;
+}
+
+/* .el-cascader-menu {
+    max-height: 200px;
+} */
