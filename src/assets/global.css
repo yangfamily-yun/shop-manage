@@ -50,3 +50,6 @@ body,
 /* .el-cascader-menu {
     max-height: 200px;
 } */
+.el-alert {
+    margin-bottom: 20px;
+}

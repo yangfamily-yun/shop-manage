@@ -258,6 +258,7 @@ export default {
     // 对话框关闭,重置表单数据
     addCateDialogClose() {
       this.$refs.AddCateFormRef.resetFields();
+      // 绑定在数据对象的数据需要手动重置
       this.seletedKeys = [];
       this.AddCateForm.cat_pid = 0;
       this.AddCateForm.cat_level = 0;
