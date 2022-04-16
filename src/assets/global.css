@@ -53,3 +53,17 @@ body,
 .el-alert {
     margin-bottom: 20px;
 }
+
+.el-step__title {
+    font-size: 10px;
+    line-height: 38px;
+    /* text-align: center; */
+}
+
+.el-checkbox {
+    margin: 0 10px 0 0 !important;
+}
+
+.ql-editor {
+    min-height: 300px;
+}

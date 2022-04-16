@@ -219,6 +219,7 @@
 export default {
   data() {
     return {
+      // 商品分类数据列表
       CuteList: [],
       //   级联选择框双向绑定的数组
       seletedKeys: [],
@@ -423,7 +424,7 @@ export default {
       row.inputValue = "";
       row.inputVisible = false;
       // 需要发送请求保存这一次操作
-      saveAttr_vals(row);
+      this.saveAttr_vals(row);
     },
     // 将对attr_vals的操作保存到数据库
     async saveAttr_vals(row) {
@@ -445,7 +446,7 @@ export default {
     async handleClose(row, i) {
       row.attr_vals.splice(i, 1);
       // 需要发送请求保存这一次操作
-      saveAttr_vals(row);
+      this.saveAttr_vals(row);
     },
   },
 };
